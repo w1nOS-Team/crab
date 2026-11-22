@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+befli = "2.7.4"
+color-print = "0.3.7"
+rustyline = "19.0.0"
