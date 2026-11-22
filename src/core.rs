@@ -5,6 +5,8 @@ use std::env;
 use std::fs;
 use std::io;
 use std::path::PathBuf;
+use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
 use std::thread;
 use std::time::Duration;
 
@@ -411,13 +413,20 @@ pub fn watch(arg: &String, cmd: &WatchFN) {
     };
 
     let x = open(&path).expect("");
+    let flag = Arc::new(AtomicBool::new(true));
+
+    let fl = Arc::clone(&flag);
+    ctrlc::set_handler(move || {
+        fl.store(false, std::sync::atomic::Ordering::Relaxed);
+    })
+    .unwrap();
 
     let handle = thread::spawn({
         let mut x = x.clone();
         let enums = cmd.clone();
 
         move || {
-            loop {
+            while flag.load(std::sync::atomic::Ordering::Relaxed) {
                 if open(&path).expect("") != x {
                     let vec = vec![path.clone()];
                     match enums {

@@ -6,4 +6,5 @@ edition = "2024"
 [dependencies]
 befli = "2.7.4"
 color-print = "0.3.7"
+ctrlc = "3.5.3"
 rustyline = "19.0.0"
